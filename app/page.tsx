@@ -1,0 +1,1 @@
+export default function Home(){return(<main style={{padding:24}}><h1>LifeOS Pro</h1><p>Tu sistema operativo personal.</p><div style={{display:'grid',gap:12}}><div>Tareas</div><div>Metas</div><div>Finanzas</div><div>Ideas</div></div></main>)}
