@@ -1,0 +1,1 @@
+{"name":"LifeOS Pro","short_name":"LifeOS","description":"Sistema operativo personal para tareas, metas, finanzas, ideas y alimentacion.","start_url":"/","display":"standalone","background_color":"#050816","theme_color":"#050816","orientation":"portrait","icons":[{"src":"/icon.svg","sizes":"512x512","type":"image/svg+xml","purpose":"any maskable"}]}
