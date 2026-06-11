@@ -1,4 +1,5 @@
 import './globals.css';
+import './modules.css';
 
 export const metadata = { title: 'LifeOS Pro', description: 'Sistema operativo personal para productividad, dinero y metas' };
 
