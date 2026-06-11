@@ -18,7 +18,8 @@ create table if not exists lifeos_items (
   module text not null,
   data jsonb not null,
   created_at timestamptz default now(),
-  updated_at timestamptz default now()
+  updated_at timestamptz default now(),
+  unique(user_id, module)
 );
 
 alter table lifeos_profiles enable row level security;
