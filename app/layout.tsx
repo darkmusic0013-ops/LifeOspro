@@ -9,4 +9,13 @@ export const metadata = {
   icons: [{ rel: 'icon', url: '/icon.svg' }, { rel: 'apple-touch-icon', url: '/icon.svg' }]
 };
 
-export default function RootLayout({children}:{children:React.ReactNode}){return (<html lang='es'><body>{children}</body></html>)}
+export default function RootLayout({children}:{children:React.ReactNode}){
+  return (
+    <html lang='es'>
+      <body>
+        <a className='authFloating' href='/auth'>Cuenta</a>
+        {children}
+      </body>
+    </html>
+  )
+}
