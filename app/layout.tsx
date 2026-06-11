@@ -8,6 +8,7 @@ import './notion-wide.css';
 import './lifeos-web.css';
 import './lifeos-web-v2.css';
 import './compact-notion.css';
+import './compact-notion-fix.css';
 
 export const metadata = { title: 'LifeOS Pro', description: 'Sistema operativo personal para productividad, dinero y metas', manifest: '/manifest.json', themeColor: '#f7f7f5' };
 
