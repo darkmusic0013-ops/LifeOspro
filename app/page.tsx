@@ -27,18 +27,24 @@ const projects = [['Diario del Esqueleto','YouTube','18%'],['LifeOS Pro','SaaS',
 const money = [['Salario','RD$50,000'],['Gastos','RD$8,000'],['Disponible','RD$42,000']];
 const pct = (c:number,t:number) => Math.min(100, Math.round((c / t) * 100));
 const storageKey = 'lifeos_tasks_v1';
-
 const emptyTask: Omit<Task,'id'|'done'> = { title: '', category: 'Personal', due: 'Hoy', priority: 'Media' };
+const filters = ['Todas','Pendientes','Completadas','Hoy','Mañana','Semana','Mes','Alta'];
 
 export default function Home(){
   const [tasks, setTasks] = useState<Task[]>(defaultTasks);
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [showTaskForm, setShowTaskForm] = useState(false);
-  const [newTask, setNewTask] = useState(emptyTask);
+  const [taskDraft, setTaskDraft] = useState(emptyTask);
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+  const [taskFilter, setTaskFilter] = useState('Todas');
 
   useEffect(() => {
-    const saved = window.localStorage.getItem(storageKey);
-    if(saved){ setTasks(JSON.parse(saved)); }
+    try {
+      const saved = window.localStorage.getItem(storageKey);
+      if(saved){ setTasks(JSON.parse(saved)); }
+    } catch {
+      setTasks(defaultTasks);
+    }
   }, []);
 
   useEffect(() => {
@@ -47,13 +53,48 @@ export default function Home(){
 
   const pendingTasks = tasks.filter(t => !t.done);
   const todayTasks = tasks.filter(t => !t.done && t.due === 'Hoy');
+  const completedTasks = tasks.filter(t => t.done);
   const topTasks = [...pendingTasks].sort((a,b) => ({Alta:0,Media:1,Baja:2}[a.priority]-({Alta:0,Media:1,Baja:2}[b.priority])).slice(0,3);
 
-  function addTask(){
-    if(!newTask.title.trim()) return;
-    setTasks([{...newTask, id: crypto.randomUUID(), done:false}, ...tasks]);
-    setNewTask(emptyTask);
+  const filteredTasks = useMemo(() => {
+    return tasks.filter(t => {
+      if(taskFilter === 'Pendientes') return !t.done;
+      if(taskFilter === 'Completadas') return t.done;
+      if(taskFilter === 'Hoy') return t.due === 'Hoy';
+      if(taskFilter === 'Mañana') return t.due === 'Mañana';
+      if(taskFilter === 'Semana') return t.due === 'Esta semana';
+      if(taskFilter === 'Mes') return t.due === 'Este mes';
+      if(taskFilter === 'Alta') return t.priority === 'Alta';
+      return true;
+    });
+  }, [tasks, taskFilter]);
+
+  function resetTaskForm(){
+    setTaskDraft(emptyTask);
+    setEditingTaskId(null);
     setShowTaskForm(false);
+  }
+
+  function openNewTask(){
+    setTaskDraft(emptyTask);
+    setEditingTaskId(null);
+    setShowTaskForm(true);
+  }
+
+  function openEditTask(task: Task){
+    setTaskDraft({ title: task.title, category: task.category, due: task.due, priority: task.priority });
+    setEditingTaskId(task.id);
+    setShowTaskForm(true);
+  }
+
+  function saveTask(){
+    if(!taskDraft.title.trim()) return;
+    if(editingTaskId){
+      setTasks(tasks.map(t => t.id === editingTaskId ? {...t, ...taskDraft} : t));
+    } else {
+      setTasks([{...taskDraft, id: crypto.randomUUID(), done:false}, ...tasks]);
+    }
+    resetTaskForm();
     setActiveTab('Tareas');
   }
 
@@ -63,6 +104,7 @@ export default function Home(){
 
   function deleteTask(id:string){
     setTasks(tasks.filter(t => t.id !== id));
+    if(editingTaskId === id){ resetTaskForm(); }
   }
 
   const dashboard = <>
@@ -72,6 +114,6 @@ export default function Home(){
     <section className='modules'><div className='card wide'><h3>Proyectos activos</h3>{projects.map(p=><div className='goal' key={p[0]}><div><b>{p[0]}</b><span>{p[2]}</span></div><small>{p[1]}</small><div className='bar violet'><i style={{width:p[2]}}></i></div></div>)}</div><div className='card food'><h3>Plan de alimentación</h3><p>🍳 Desayuno: Huevos + avena</p><p>🍗 Almuerzo: Pollo + arroz + ensalada</p><p>🍓 Cena: Yogurt + fruta</p></div></section>
   </>;
 
-  const taskPanel = <section className='taskBoard'><div className='card wide'><div className='sectionHeader'><div><h3>Tareas</h3><p className='muted'>Crea, completa y elimina tus pendientes. Por ahora se guardan en este navegador.</p></div><button className='btn' onClick={()=>setShowTaskForm(true)}>+ Nueva tarea</button></div><div className='taskStats'><div><b>{tasks.length}</b><span>Total</span></div><div><b>{pendingTasks.length}</b><span>Pendientes</span></div><div><b>{tasks.filter(t=>t.done).length}</b><span>Completadas</span></div></div><div className='taskList'>{tasks.map(t=><div className={'taskCard '+(t.done?'done':'')} key={t.id}><button className='check' onClick={()=>toggleTask(t.id)}>{t.done?'✓':''}</button><div><b>{t.title}</b><small>{t.category} · {t.due}</small></div><span className={'priority '+(t.priority=='Alta'?'alta':t.priority=='Media'?'media':'baja')}>{t.priority}</span><button className='delete' onClick={()=>deleteTask(t.id)}>Eliminar</button></div>)}</div></div></section>;
+  const taskPanel = <section className='taskBoard'><div className='card wide'><div className='sectionHeader'><div><h3>Tareas</h3><p className='muted'>Crea, edita, completa, filtra y elimina tus pendientes. Por ahora se guardan en este navegador.</p></div><button className='btn' onClick={openNewTask}>+ Nueva tarea</button></div><div className='taskStats'><div><b>{tasks.length}</b><span>Total</span></div><div><b>{pendingTasks.length}</b><span>Pendientes</span></div><div><b>{completedTasks.length}</b><span>Completadas</span></div></div><div className='filters'>{filters.map(f=><button key={f} onClick={()=>setTaskFilter(f)} className={taskFilter===f?'active':''}>{f}</button>)}</div><div className='taskList'>{filteredTasks.length===0&&<div className='emptyState'>No hay tareas para este filtro.</div>}{filteredTasks.map(t=><div className={'taskCard '+(t.done?'done':'')} key={t.id}><button className='check' onClick={()=>toggleTask(t.id)}>{t.done?'✓':''}</button><div><b>{t.title}</b><small>{t.category} · {t.due}</small></div><span className={'priority '+(t.priority=='Alta'?'alta':t.priority=='Media'?'media':'baja')}>{t.priority}</span><button className='edit' onClick={()=>openEditTask(t)}>Editar</button><button className='delete' onClick={()=>deleteTask(t.id)}>Eliminar</button></div>)}</div></div></section>;
 
-  return(<div className='app'><div className='orb orb1'></div><div className='orb orb2'></div><div className='top'><div className='brand'><div className='logo'>OS</div><div><h2>LifeOS Pro</h2><div className='muted'>Centro personal de productividad, dinero y metas</div></div></div><div className='actions'><button className='soft'>Vista semanal</button><button className='btn' onClick={()=>setShowTaskForm(true)}>+ Nueva tarea</button></div></div>{activeTab==='Tareas'?taskPanel:dashboard}<div className='nav'>{['Dashboard','Tareas','Metas','Finanzas','Ideas','Perfil'].map(tab=><button key={tab} onClick={()=>setActiveTab(tab)} className={activeTab===tab?'active':''}>{tab}</button>)}</div>{showTaskForm&&<div className='modalBack'><div className='modal'><h3>Nueva tarea</h3><input placeholder='Ej: Crear canal de YouTube' value={newTask.title} onChange={e=>setNewTask({...newTask,title:e.target.value})}/><div className='formGrid'><select value={newTask.category} onChange={e=>setNewTask({...newTask,category:e.target.value})}><option>YouTube</option><option>Trabajo</option><option>Finanzas</option><option>Aprendizaje</option><option>Personal</option><option>Salud</option></select><select value={newTask.due} onChange={e=>setNewTask({...newTask,due:e.target.value})}><option>Hoy</option><option>Mañana</option><option>Esta semana</option><option>Este mes</option><option>Futuro</option></select><select value={newTask.priority} onChange={e=>setNewTask({...newTask,priority:e.target.value as Task['priority']})}><option>Alta</option><option>Media</option><option>Baja</option></select></div><div className='modalActions'><button className='soft' onClick={()=>setShowTaskForm(false)}>Cancelar</button><button className='btn' onClick={addTask}>Guardar tarea</button></div></div></div>}</div>)}
+  return(<div className='app'><div className='orb orb1'></div><div className='orb orb2'></div><div className='top'><div className='brand'><div className='logo'>OS</div><div><h2>LifeOS Pro</h2><div className='muted'>Centro personal de productividad, dinero y metas</div></div></div><div className='actions'><button className='soft'>Vista semanal</button><button className='btn' onClick={openNewTask}>+ Nueva tarea</button></div></div>{activeTab==='Tareas'?taskPanel:dashboard}<div className='nav'>{['Dashboard','Tareas','Metas','Finanzas','Ideas','Perfil'].map(tab=><button key={tab} onClick={()=>setActiveTab(tab)} className={activeTab===tab?'active':''}>{tab}</button>)}</div>{showTaskForm&&<div className='modalBack'><div className='modal'><h3>{editingTaskId?'Editar tarea':'Nueva tarea'}</h3><input placeholder='Ej: Crear canal de YouTube' value={taskDraft.title} onChange={e=>setTaskDraft({...taskDraft,title:e.target.value})}/><div className='formGrid'><select value={taskDraft.category} onChange={e=>setTaskDraft({...taskDraft,category:e.target.value})}><option>YouTube</option><option>Trabajo</option><option>Finanzas</option><option>Aprendizaje</option><option>Personal</option><option>Salud</option></select><select value={taskDraft.due} onChange={e=>setTaskDraft({...taskDraft,due:e.target.value})}><option>Hoy</option><option>Mañana</option><option>Esta semana</option><option>Este mes</option><option>Futuro</option></select><select value={taskDraft.priority} onChange={e=>setTaskDraft({...taskDraft,priority:e.target.value as Task['priority']})}><option>Alta</option><option>Media</option><option>Baja</option></select></div><div className='modalActions'><button className='soft' onClick={resetTaskForm}>Cancelar</button><button className='btn' onClick={saveTask}>{editingTaskId?'Guardar cambios':'Guardar tarea'}</button></div></div></div>}</div>)}
