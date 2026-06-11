@@ -1,0 +1,35 @@
+/* Final layout correction: no overlap, centered premium SaaS layout */
+.app{
+  width:min(1120px,calc(100vw - 64px))!important;
+  max-width:none!important;
+  margin:0 auto!important;
+  padding:24px 0 90px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:16px!important;
+  box-sizing:border-box!important;
+}
+.top{
+  order:1!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+  position:sticky!important;
+  top:12px!important;
+}
+.nav{
+  order:2!important;
+  position:static!important;
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  bottom:auto!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  justify-content:flex-start!important;
+  box-sizing:border-box!important;
+}
+.hero,.modules,.taskBoard{order:3!important;width:100%!important;box-sizing:border-box!important}.hero{display:grid!important;grid-template-columns:minmax(0,1.35fr) minmax(320px,.75fr)!important;gap:16px!important}.modules{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important;margin-top:0!important}.modules .wide{grid-column:span 2!important}.card{min-width:0!important}.authFloating,.syncFloating{right:18px!important;opacity:.88!important}.syncFloating{top:58px!important}
+@media(max-width:900px){.app{width:100%!important;padding:14px 14px 96px!important}.top{position:relative!important;top:0!important}.top:after{display:none!important}.nav{overflow:auto!important}.hero,.modules,.taskBoard{grid-template-columns:1fr!important}.modules .wide{grid-column:auto!important}.authFloating{top:auto!important;bottom:86px!important;right:14px!important}.syncFloating{top:auto!important;bottom:134px!important;right:14px!important}}
+@media(max-width:520px){.app{padding:12px 12px 96px!important}.top{border-radius:18px!important}.nav{border-radius:18px!important}.card{padding:16px!important}.hero{gap:12px!important}.modules{gap:12px!important}}
