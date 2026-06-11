@@ -14,6 +14,7 @@ export default function RootLayout({children}:{children:React.ReactNode}){
     <html lang='es'>
       <body>
         <a className='authFloating' href='/auth'>Cuenta</a>
+        <a className='syncFloating' href='/sync'>Sync</a>
         {children}
       </body>
     </html>
