@@ -1,1 +1,5 @@
-export default function RootLayout({children}:{children:React.ReactNode}){return (<html lang='es'><body style={{margin:0,fontFamily:'Inter,Arial,sans-serif',background:'#0b1020',color:'white'}}>{children}</body></html>)}
+import './globals.css';
+
+export const metadata = { title: 'LifeOS Pro', description: 'Sistema operativo personal para productividad, dinero y metas' };
+
+export default function RootLayout({children}:{children:React.ReactNode}){return (<html lang='es'><body>{children}</body></html>)}
