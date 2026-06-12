@@ -1,0 +1,82 @@
+/* Critical overlap fix: dashboard sections return to normal document flow. */
+.compactDashboard{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:16px!important;
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  align-items:start!important;
+}
+.compactDashboard *{
+  position:relative!important;
+}
+.compactDashboard>.statGrid{
+  grid-column:1/-1!important;
+  grid-row:auto!important;
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:16px!important;
+  width:100%!important;
+  margin:0 0 16px!important;
+}
+.compactDashboard>.dashboardGrid{
+  grid-column:1/-1!important;
+  grid-row:auto!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)!important;
+  grid-template-areas:
+    "mission next"
+    "finance ai"!important;
+  gap:16px!important;
+  width:100%!important;
+  align-items:stretch!important;
+  overflow:visible!important;
+}
+.compactDashboard>.lowerGrid{
+  grid-column:1/-1!important;
+  grid-row:auto!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:16px!important;
+  width:100%!important;
+  align-items:start!important;
+  overflow:visible!important;
+}
+.missionDay{grid-area:mission!important;grid-column:auto!important;grid-row:auto!important;z-index:1!important;display:block!important;min-height:0!important;height:auto!important;overflow:visible!important;}
+.nextCard{grid-area:next!important;grid-column:auto!important;grid-row:auto!important;z-index:1!important;display:block!important;min-height:0!important;height:auto!important;overflow:visible!important;}
+.financeMini{grid-area:finance!important;grid-column:auto!important;grid-row:auto!important;z-index:1!important;display:block!important;min-height:0!important;height:auto!important;overflow:visible!important;}
+.lifeAi{grid-area:ai!important;grid-column:auto!important;grid-row:auto!important;z-index:1!important;display:block!important;min-height:0!important;height:auto!important;overflow:visible!important;}
+.savingCard{display:none!important;}
+.goalsBlock{grid-column:auto!important;grid-row:auto!important;min-height:0!important;height:auto!important;overflow:visible!important;}
+.lowerGrid>.card:not(.goalsBlock){grid-column:auto!important;grid-row:auto!important;min-height:0!important;height:auto!important;overflow:visible!important;}
+.card{height:auto!important;min-height:0!important;overflow:visible!important;}
+.missionDay .sectionHeader,.nextCard,.financeMini,.lifeAi,.goalsBlock,.lowerGrid>.card{isolation:isolate!important;}
+.moneyLine{
+  display:flex!important;
+  justify-content:space-between!important;
+  align-items:center!important;
+  gap:16px!important;
+  width:100%!important;
+  padding:12px 0!important;
+  border-top:1px solid #E8E6E0!important;
+  font-size:14px!important;
+}
+.moneyLine span,.moneyLine b{display:inline-flex!important;visibility:visible!important;opacity:1!important;font-size:14px!important;line-height:1.4!important;white-space:nowrap!important;}
+.moneyLine b{margin-left:auto!important;text-align:right!important;color:#222!important;font-weight:600!important;}
+.moneyLine.expense b{color:#A32D2D!important;}
+.moneyLine.available b{color:#3B6D11!important;font-weight:700!important;}
+.missionDay h3{font-size:17px!important;font-weight:600!important;color:#111!important;margin:12px 0 6px!important;text-transform:none!important;letter-spacing:0!important;}
+.missionDay .muted{font-size:14px!important;color:#888780!important;}
+.tinyProgress{display:grid!important;grid-template-columns:1fr auto!important;gap:7px!important;margin-top:18px!important;}
+.tinyProgress i{display:block!important;grid-column:1/-1!important;height:6px!important;background:#EEEDFE!important;border-radius:3px!important;overflow:hidden!important;}
+.tinyProgress em{display:block!important;height:100%!important;background:#7F77DD!important;}
+@media(max-width:1180px){
+  .compactDashboard>.statGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+  .compactDashboard>.dashboardGrid,.compactDashboard>.lowerGrid{grid-template-columns:1fr!important;grid-template-areas:none!important;}
+  .missionDay,.nextCard,.financeMini,.lifeAi{grid-area:auto!important;}
+}
+@media(max-width:520px){
+  .compactDashboard>.statGrid{grid-template-columns:1fr!important;}
+  .compactDashboard>.dashboardGrid,.compactDashboard>.lowerGrid{gap:12px!important;}
+}
