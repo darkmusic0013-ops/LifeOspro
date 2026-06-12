@@ -13,7 +13,8 @@ import './dashboard-polish.css';
 import './responsive-dashboard.css';
 import './dashboard-tight.css';
 import './dashboard-overlap-fix.css';
+import './notion-linear-final.css';
 
-export const metadata = { title: 'LifeOS Pro', description: 'Sistema operativo personal para productividad, dinero y metas', manifest: '/manifest.json', themeColor: '#F7F6F3' };
+export const metadata = { title: 'LifeOS Pro', description: 'Sistema operativo personal para productividad, dinero y metas', manifest: '/manifest.json', themeColor: '#FBFBFA' };
 
 export default function RootLayout({children}:{children:React.ReactNode}){return <html lang='es'><body>{children}</body></html>}
