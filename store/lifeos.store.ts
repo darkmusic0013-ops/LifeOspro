@@ -27,14 +27,14 @@ const initialFinance: FinanceState = {
 };
 
 const initialIdeas: Idea[] = [
-  { id: 'i1', title: 'Video: ¿Qué pasaría si un esqueleto gigante despertara?', note: 'Idea para Shorts con hook fuerte y final abierto.', category: 'YouTube' },
+  { id: 'i1', title: 'Video de esqueleto gigante', note: 'Idea para Shorts con hook fuerte y final abierto.', category: 'YouTube' },
   { id: 'i2', title: 'Automatizar alertas de IA', note: 'Crear flujo futuro para recibir novedades importantes.', category: 'IA' },
-  { id: 'i3', title: 'Página web para trading', note: 'Dashboard con herramientas, cursos y plantillas.', category: 'Negocio' }
+  { id: 'i3', title: 'Pagina web para trading', note: 'Dashboard con herramientas, cursos y plantillas.', category: 'Negocio' }
 ];
 
 const initialMeals: Meal[] = [
-  { id: 'm1', day: 'Hoy', breakfast: 'Huevos + avena', lunch: 'Pollo + arroz + ensalada', dinner: 'Yogurt + fruta', note: 'Plan simple para mantener energía.' },
-  { id: 'm2', day: 'Mañana', breakfast: 'Pan integral + huevos', lunch: 'Carne molida + vegetales', dinner: 'Batida ligera', note: 'Preparar comida desde temprano.' }
+  { id: 'm1', day: 'Hoy', breakfast: 'Huevos + avena', lunch: 'Pollo + arroz + ensalada', dinner: 'Yogurt + fruta', note: 'Plan simple para mantener energia.' },
+  { id: 'm2', day: 'Manana', breakfast: 'Pan integral + huevos', lunch: 'Carne molida + vegetales', dinner: 'Batida ligera', note: 'Preparar comida desde temprano.' }
 ];
 
 const initialProfile: Profile = {
@@ -47,10 +47,10 @@ const initialProfile: Profile = {
 };
 
 export const empires: Empire[] = [
-  { icon: '💀', name: 'Diario del Esqueleto', description: 'Canal de YouTube, shorts virales y marca oscura', progress: 18 },
-  { icon: '🤖', name: 'IA y Automatizaciones', description: 'Herramientas, flujos, agentes y sistemas', progress: 25 },
-  { icon: '💼', name: 'Seguros', description: 'Trabajo, pólizas, endosos y productividad profesional', progress: 70 },
-  { icon: '💰', name: 'Inversiones', description: 'Capital, oportunidades, trading y crecimiento', progress: 8 }
+  { icon: 'OS', name: 'Diario del Esqueleto', description: 'Canal de YouTube, shorts virales y marca oscura', progress: 18 },
+  { icon: 'AI', name: 'IA y Automatizaciones', description: 'Herramientas, flujos, agentes y sistemas', progress: 25 },
+  { icon: 'SG', name: 'Seguros', description: 'Trabajo, polizas, endosos y productividad profesional', progress: 70 },
+  { icon: 'IN', name: 'Inversiones', description: 'Capital, oportunidades, trading y crecimiento', progress: 8 }
 ];
 
 interface LifeOSStore {
@@ -62,6 +62,10 @@ interface LifeOSStore {
   meals: Meal[];
   profile: Profile;
   setActiveTab: (tab: LifeOSTab) => void;
+  setTasks: (tasks: Task[]) => void;
+  setGoals: (goals: Goal[]) => void;
+  setExpenses: (expenses: FinanceState['expenses']) => void;
+  setIdeas: (ideas: Idea[]) => void;
   toggleTask: (taskId: string) => void;
   addQuickTask: (title: string) => void;
 }
@@ -77,6 +81,10 @@ export const useLifeOSStore = create<LifeOSStore>()(
       meals: initialMeals,
       profile: initialProfile,
       setActiveTab: (tab) => set({ activeTab: tab }),
+      setTasks: (tasks) => set({ tasks }),
+      setGoals: (goals) => set({ goals }),
+      setExpenses: (expenses) => set((state) => ({ finance: { ...state.finance, expenses } })),
+      setIdeas: (ideas) => set({ ideas }),
       toggleTask: (taskId) => set((state) => ({
         tasks: state.tasks.map((task) => task.id === taskId ? { ...task, done: !task.done, status: task.done ? 'Pendiente' : 'Completada' } : task)
       })),
