@@ -11,16 +11,14 @@ export default function Home() {
   const activeMissions = tasks.filter((task) => !task.done && task.due === 'Hoy').length;
 
   return (
-    <div className="flex min-h-screen bg-[#FBFBFA] text-[#37352F]">
-      <div className="hidden md:block">
-        <SidebarNav activeTab={activeTab} profile={profile} onChange={setActiveTab} />
-      </div>
-      <div className="flex min-w-0 flex-1 flex-col">
+    <div className="flex min-h-screen bg-[#FBFBFA] text-[#37352F] max-md:block">
+      <SidebarNav activeTab={activeTab} profile={profile} onChange={setActiveTab} />
+      <div className="flex min-w-0 flex-1 flex-col max-md:min-h-screen">
         <DashboardHeader name={profile.name} activeMissions={activeMissions} onNewMission={() => addQuickTask('Nueva tarea rapida')} />
         {activeTab === 'Dashboard' ? (
           <Dashboard />
         ) : (
-          <main className="min-w-0 flex-1 px-8 pb-10 max-md:px-4">
+          <main className="min-w-0 flex-1 px-8 pb-10 max-md:px-4 max-md:pb-24">
             <Card>
               <h2 className="text-xl font-bold text-[#37352F]">{activeTab}</h2>
               <p className="mt-2 text-sm text-[#9B9A97]">Modulo preparado para continuar la Fase 1 sin romper la base.</p>
